@@ -55,10 +55,13 @@ export const DriverDisplay: React.FC<DriverDisplayProps> = ({
 			<section className="w-full min-h-7/12 mb-4 backdrop-blur-lg rounded-xl py-6 shadow-inner flex md:flex-col items-center justify-center">
 				{/* Speed display moved below toggle */}
 				<span
-					className={
-						" text-white/90 text-center text-[250px] px-24 md:h-3/4 md:-translate-y-20 font-bold mt-4 " +
-						(gear === 1 ? " -translate-x-5" : "")
-					}
+					className={`transition-all ease-linear text-center text-[250px] px-24 md:h-3/4 md:-translate-y-20 font-bold mt-4 ${
+						gear === 1 ? "-translate-x-5 " : ""
+					} ${
+						parseFloat(rpmPerc) >= 80
+							? " text-red-500"
+							: " text-white/90"
+					} ${parseFloat(rpmPerc) >= 90 ? " rpm-flicker" : " "}`}
 				>
 					{gear === 0 ? "R" : gear}{" "}
 				</span>

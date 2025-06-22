@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "motion/react";
 
 interface RevMeterProps {
 	rpmPerc: string;
@@ -7,7 +8,8 @@ interface RevMeterProps {
 
 const RevMeter = ({ rpmPerc, styling }: RevMeterProps) => {
 	return (
-		<section
+		<motion.section
+			layout
 			className={
 				"w-full bg-gray-800 shadow-inner flex items-center " +
 				(styling || "")
@@ -15,16 +17,16 @@ const RevMeter = ({ rpmPerc, styling }: RevMeterProps) => {
 		>
 			<span
 				className={
-					"h-full transition-all text-red-700 " +
+					"h-full transition-all ease-linear text-red-700 " +
 					(parseFloat(rpmPerc) > 70
 						? parseFloat(rpmPerc) > 80
 							? "bg-red-500"
 							: "bg-yellow-500"
 						: " bg-green-400")
 				}
-				style={{ width: `${rpmPerc}%` }}
+				style={{ width: `${parseFloat(rpmPerc) + 5}%` }}
 			></span>
-		</section>
+		</motion.section>
 	);
 };
 

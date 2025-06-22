@@ -13,7 +13,7 @@ const RaceLimiter = ({ displayRpm, rpmPerc }: RaceLimiterProps) => {
 				{displayRpm}
 			</span>
 			<span
-				className="absolute w-full h-full bg-black"
+				className={"absolute w-full h-full bg-black "}
 				style={{
 					clipPath: "ellipse(51% 100% at 50% -20%)", // makes it start tighter at center but still go full width
 				}}
