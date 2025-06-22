@@ -21,12 +21,10 @@ export default function Home() {
 
 		async function fetchTelemetry() {
 			try {
-				if (!process.env.NEXT_PUBLIC_TELEMETRY_API) {
+				if (!process.env.NEXT_PUBLIC_TEST_API) {
 					throw new Error("Telemetry API URL is not defined");
 				}
-				const res = await fetch(
-					`${process.env.NEXT_PUBLIC_TELEMETRY_API}`
-				);
+				const res = await fetch(`${process.env.NEXT_PUBLIC_TEST_API}`);
 				if (!res.ok) throw new Error(res.statusText);
 				const data = (await res.json()) as Telemetry;
 				if (isMounted) setTelemetry(data);

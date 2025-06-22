@@ -1,5 +1,6 @@
 // components/DriverDisplay.tsx
 import React, { useState, useMemo } from "react";
+import RaceLimiter from "./RaceLimiter";
 
 interface DriverDisplayProps {
 	speedKph?: number;
@@ -44,57 +45,85 @@ export const DriverDisplay: React.FC<DriverDisplayProps> = ({
 		return perc;
 	}, [rpm, engineMaxRpm]);
 	return (
-		<div className="flex gauge-number flex-col items-center justify-evenly w-full mx-auto p-6 bg-gradient-to-b from-gray-900 to-black shadow-2xl">
-			<header className="w-full py-2 mb-4 bg-gradient-to-r from-green-400 to-black rounded-xl shadow-lg text-center">
-				<h1 className="text-white opacity-50 text-2xl font-extrabold tracking-wide">
+		<div className="flex gauge-number flex-col items-center justify-evenly w-full mx-auto bg-gradient-to-b from-gray-900 to-black shadow-2xl">
+			<header className="w-full min-h-1/12 py-2 mb-4  rounded-xl shadow-lg text-center">
+				<h1 className="text-white opacity-50 text-2xl font-extrabold tracking-wide m-2">
 					🏁 Forza Live
 				</h1>
 			</header>
 
-			<section className="w-full h-2/4 mb-4 backdrop-blur-lg rounded-xl py-6 shadow-inner flex flex-col items-center justify-center">
+			<section className="w-full min-h-7/12 mb-4 backdrop-blur-lg rounded-xl py-6 shadow-inner flex md:flex-col items-center justify-center">
 				{/* Speed display moved below toggle */}
-				<span className="text-white/90 text-8xl font-bold mt-4">
-					{gear === 0 ? "R" : gear}
-				</span>
-				<span className="text-white/90 text-3xl font-bold mt-4">
-					{displaySpeed}
-				</span>
-				{/* Unit toggle moved above speed */}
-				<div className="mt-2 flex gap-4">
-					{(["kph", "mph"] as const).map((u) => (
-						<button
-							key={u}
-							onClick={() => setUnit(u)}
-							className={`transition border-2 border-transparent font-bold hover:cursor-pointer px-3 py-1 rounded ${
-								unit === u
-									? "text-green-400 border-b-green-400 "
-									: "text-gray-500 hover:bg-white/90"
-							}`}
-						>
-							{u}
-						</button>
-					))}
-				</div>
-			</section>
-
-			<section className="w-full bg-gray-800 rounded-lg shadow-inner flex items-center relative">
-				<span className="w-full absolute text-center text-white/90">
-					{displayRpm}
-				</span>
 				<span
 					className={
-						"transition-all ease-linear text-red-700 rounded-l-lg " +
-						(parseFloat(rpmPerc) > 70
-							? parseFloat(rpmPerc) > 80
-								? "bg-red-500"
-								: "bg-yellow-500"
-							: " bg-green-400")
+						" text-white/90 text-center text-[250px] px-24 md:h-3/4 md:-translate-y-20 font-bold mt-4 " +
+						(gear === 1 ? " -translate-x-5" : "")
 					}
-					style={{ width: `${rpmPerc}%` }}
 				>
-					.
+					{gear === 0 ? "R" : gear}{" "}
 				</span>
+
+				{/* Unit toggle moved above speed */}
+				<div className="flex flex-col items-center justify-center min-w-[300px]">
+					<span className="text-white/90 text-[50px] font-bold mt-4 w-full flex justify-center items-end text-center gap-4">
+						{/* Digit Grid */}
+						<span className="grid grid-flow-col auto-cols-fr gap-2 w-2/3 text-[50px] font-bold relative">
+							{(() => {
+								const [intPart, decimalPart] =
+									displaySpeed.split(".");
+								const paddedInt = intPart.padStart(3, "0");
+								const fullString =
+									decimalPart !== undefined
+										? `${paddedInt}.${decimalPart}`
+										: paddedInt;
+
+								return fullString
+									.split("")
+									.map((char, idx, arr) => {
+										const isLeadingZero =
+											idx <
+												paddedInt.length -
+													intPart.length &&
+											paddedInt[idx] === "0";
+
+										return (
+											<span
+												key={idx}
+												className={`flex items-center justify-center relative px-5 ${
+													isLeadingZero
+														? "text-white/10"
+														: "text-white/90"
+												}`}
+											>
+												{char}
+												{idx < arr.length - 1 && (
+													<span className="absolute right-[-6px] top-0 h-full w-px bg-white/10" />
+												)}
+											</span>
+										);
+									});
+							})()}
+						</span>
+					</span>
+
+					<div className="mt-2 flex gap-4">
+						{(["kph", "mph"] as const).map((u) => (
+							<button
+								key={u}
+								onClick={() => setUnit(u)}
+								className={`transition-all border-2 border-transparent font-bold hover:cursor-pointer px-3 py-1 rounded ${
+									unit === u
+										? "text-green-400 border-b-green-400 "
+										: "text-gray-500 hover:bg-white/90"
+								}`}
+							>
+								{u}
+							</button>
+						))}
+					</div>
+				</div>
 			</section>
+			<RaceLimiter displayRpm={displayRpm} rpmPerc={rpmPerc} />
 		</div>
 	);
 };
